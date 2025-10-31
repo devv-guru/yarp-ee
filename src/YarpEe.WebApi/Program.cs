@@ -52,10 +52,15 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<YarpEeDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
     try
     {
         await dbContext.Database.MigrateAsync();
         app.Logger.LogInformation("Database migration completed successfully");
+        
+        // Seed default data
+        await YarpEe.WebApi.Data.DbSeeder.SeedDefaultDataAsync(dbContext, logger);
     }
     catch (Exception ex)
     {
@@ -70,6 +75,7 @@ app.UseRouting();
 // Map endpoints
 app.MapRouteEndpoints();
 app.MapClusterEndpoints();
+app.MapHostEndpoints();
 app.MapProxyEndpoints();
 app.MapHealthEndpoints();
 
