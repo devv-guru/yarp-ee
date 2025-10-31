@@ -1,0 +1,130 @@
+﻿@page "/"
+
+<PageTitle>Dashboard | YARP-EE</PageTitle>
+
+<div class="animate-fade-in">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Welcome to YARP-EE</h1>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">Manage your reverse proxy routes and clusters with ease.</p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Routes Card -->
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow">
+            <div class="p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-12 w-12 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                Routes
+                            </dt>
+                            <dd class="text-2xl font-semibold text-gray-900 dark:text-white">
+                                @routeCount
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="/routes" class="text-sm font-medium text-primary-600 hover:text-primary-500">
+                        Manage routes →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clusters Card -->
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow">
+            <div class="p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-12 w-12 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                Clusters
+                            </dt>
+                            <dd class="text-2xl font-semibold text-gray-900 dark:text-white">
+                                @clusterCount
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="/clusters" class="text-sm font-medium text-accent-600 hover:text-accent-500">
+                        Manage clusters →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Card -->
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow">
+            <div class="p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-12 w-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                Status
+                            </dt>
+                            <dd class="text-2xl font-semibold text-gray-900 dark:text-white">
+                                Operational
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <span class="text-sm font-medium text-green-600">
+                        All systems running
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-8">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div class="flex flex-wrap gap-4">
+                <a href="/routes" 
+                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Create Route
+                </a>
+                <a href="/clusters" 
+                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-accent-600 hover:bg-accent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Create Cluster
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int routeCount = 0;
+    private int clusterCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Placeholder - will be loaded from services
+        await Task.CompletedTask;
+    }
+}

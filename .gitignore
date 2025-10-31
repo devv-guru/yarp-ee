@@ -301,6 +301,9 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# Tailwind CSS build output
+**/wwwroot/css/app.min.css
+
 # Visual Studio 6 build log
 *.plg
 
