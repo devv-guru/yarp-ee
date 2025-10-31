@@ -1,6 +1,6 @@
 # YARP-EE (YARP Extended Edition)
 
-An extension of the YARP Reverse proxy with a Blazor WASM UI, and additional support for database persistence and changing configuration without server restarts.
+An extension of the YARP Reverse proxy with a **Blazor WASM UI**, and additional support for database persistence and changing configuration without server restarts.
 
 ## Architecture
 
@@ -12,19 +12,23 @@ YARP-EE follows a **Ports & Adapters (Hexagonal)** architecture:
   - **Persistence** (`YarpEe.Adapters.Persistence.Postgres`): PostgreSQL with EF Core
   - **Proxy** (`YarpEe.Adapters.Proxy.Yarp`): YARP dynamic configuration
   - **WebAPI** (`YarpEe.WebApi`): ASP.NET Core REST API
+  - **UI** (`YarpEe.UI`): Blazor WebAssembly frontend with Tailwind CSS
 
 ## Features
 
+- ✅ **Blazor WASM UI**: Beautiful, responsive web interface for managing routes and clusters
 - ✅ **Dynamic Route Configuration**: Create, update, and delete routes at runtime
 - ✅ **Dynamic Cluster Management**: Manage upstream clusters and destinations
 - ✅ **PostgreSQL Persistence**: All configurations stored in PostgreSQL
 - ✅ **Hot Reload**: Apply configuration changes without restarting the service
 - ✅ **Health Checks**: Built-in liveness and readiness probes
 - ✅ **Hexagonal Architecture**: Clean separation of concerns with ports and adapters
+- ✅ **Tailwind CSS**: Modern, responsive UI with custom blue-purple theme
 
 ## Prerequisites
 
 - .NET 9.0 SDK
+- Node.js 20+ and npm (for UI development)
 - Docker & Docker Compose (for local development)
 - PostgreSQL 16+ (if running without Docker)
 
@@ -46,7 +50,10 @@ YARP-EE follows a **Ports & Adapters (Hexagonal)** architecture:
    docker compose ps
    ```
 
-4. **The API will be available at**: `http://localhost:8080`
+4. **Access the application**:
+   - **Web UI**: `http://localhost:8080` (Blazor WASM interface)
+   - **API**: `http://localhost:8080/api` (REST API endpoints)
+
 
 ## API Endpoints
 
@@ -146,14 +153,76 @@ docker run -d \
 export YARPEE__DB__CONNECTIONSTRING="Host=localhost;Port=5432;Database=yarpee;Username=yarpee;Password=yarpee"
 ```
 
-### 3. Run the API
+### 3. Build the UI CSS
+
+```bash
+cd src/YarpEe.UI
+npm install
+npm run build:css
+```
+
+### 4. Run the API
 
 ```bash
 cd src/YarpEe.WebApi
 dotnet run
 ```
 
-The API will be available at `http://localhost:5000` (or as configured).
+The application will be available at `http://localhost:5000` (or as configured).
+
+## UI Development
+
+The UI is built with Blazor WebAssembly and Tailwind CSS v3.4.
+
+### Development Workflow
+
+1. **Install dependencies**:
+   ```bash
+   cd src/YarpEe.UI
+   npm install
+   ```
+
+2. **Watch CSS changes** (in one terminal):
+   ```bash
+   npm run watch:css
+   ```
+
+3. **Run the application** (in another terminal):
+   ```bash
+   cd ../YarpEe.WebApi
+   dotnet watch run
+   ```
+
+4. **Access the UI**: Navigate to `http://localhost:5000`
+
+### UI Architecture
+
+The UI follows the **Ports & Adapters** pattern:
+
+- **Ports** (Interfaces):
+  - `IApiClient`: HTTP communication abstraction
+  - `IRouteService`: Route management operations
+  - `IClusterService`: Cluster management operations
+  - `IHostService`: Host retrieval operations
+
+- **Adapters** (Implementations):
+  - `ApiClient`: HttpClient wrapper with logging
+  - `RouteService`: Implements route CRUD operations
+  - `ClusterService`: Implements cluster CRUD operations
+  - `HostService`: Implements host retrieval
+
+- **Models**: DTOs that match the API contracts
+
+### UI Features
+
+- **Splash Screen**: Animated loading screen with YARP-EE branding
+- **Dashboard**: Overview cards showing routes, clusters, and system status
+- **Routes Page**: Table view with sorting, filtering, and CRUD operations
+- **Clusters Page**: Card grid view with destination management
+- **Responsive Design**: Mobile-first design with Tailwind CSS
+- **Dark Mode Ready**: Theme toggle infrastructure in place
+- **Loading States**: Skeleton loaders and spinners for async operations
+- **Error Handling**: User-friendly error messages and recovery options
 
 ## Database Migrations
 
@@ -213,7 +282,20 @@ yarp-ee/
 │   ├── YarpEe.Application/            # Use cases and ports (interfaces)
 │   ├── YarpEe.Adapters.Persistence.Postgres/  # EF Core implementation
 │   ├── YarpEe.Adapters.Proxy.Yarp/    # YARP configuration adapter
-│   └── YarpEe.WebApi/                 # ASP.NET Core API
+│   ├── YarpEe.WebApi/                 # ASP.NET Core API (serves UI)
+│   └── YarpEe.UI/                     # Blazor WASM frontend
+│       ├── Models/                    # DTOs matching API contracts
+│       ├── Services/                  # Port interfaces and adapters
+│       ├── Pages/                     # Razor components
+│       │   ├── Home.razor            # Dashboard page
+│       │   ├── Routes.razor          # Routes management
+│       │   ├── Clusters.razor        # Clusters management
+│       │   └── Shared/               # Layout components
+│       ├── wwwroot/                  # Static assets
+│       │   ├── css/                  # Tailwind CSS
+│       │   └── index.html            # SPA entry point
+│       ├── tailwind.config.js        # Tailwind configuration
+│       └── package.json              # NPM dependencies
 ├── tests/
 │   └── YarpEe.Application.Tests/      # Unit tests
 ├── docker-compose.yml                 # Docker Compose configuration
@@ -228,7 +310,8 @@ yarp-ee/
 1. **Domain Layer** is completely independent - no framework dependencies
 2. **Application Layer** defines ports (interfaces) that adapters implement
 3. **Adapters** depend inward on ports, never the other way around
-4. **Dependency Injection** is configured in the WebApi composition root
+4. **Dependency Injection** is configured in the WebApi and UI composition roots
+5. **UI follows same pattern**: Services define ports, implementations are adapters
 
 ### Key Design Decisions
 
@@ -236,6 +319,7 @@ yarp-ee/
 - **Repository Pattern** abstracts data access behind ports
 - **Use Cases** orchestrate domain logic and trigger proxy reloads
 - **Dynamic Config Provider** uses `IServiceProvider` to resolve scoped dependencies from singleton service
+- **UI Services** abstract HTTP communication behind ports for testability and flexibility
 
 ## Troubleshooting
 
@@ -258,12 +342,16 @@ If routes aren't working:
 
 ## Future Enhancements
 
-- [ ] Blazor WASM UI for management
-- [ ] Certificate management API
+- [x] ~~Blazor WASM UI for management~~ ✅ Implemented
+- [ ] Complete CRUD dialogs for routes and clusters in UI
+- [ ] Host management UI
+- [ ] Certificate management API and UI
 - [ ] Authentication & Authorization
-- [ ] Metrics and monitoring
-- [ ] Rate limiting configuration
-- [ ] Request transformation rules
+- [ ] Metrics and monitoring dashboard
+- [ ] Rate limiting configuration UI
+- [ ] Request transformation rules UI
+- [ ] Dark mode implementation
+- [ ] Export/Import configuration
 
 ## License
 
