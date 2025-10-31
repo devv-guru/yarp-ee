@@ -166,9 +166,31 @@ dotnet ef migrations add <MigrationName> --context YarpEeDbContext
 
 ## Running Tests
 
+### Unit Tests
+
 ```bash
 dotnet test
 ```
+
+### Integration Tests
+
+A bash script is provided to test the complete functionality:
+
+```bash
+# With docker-compose
+docker compose up -d
+./test-integration.sh
+
+# Or specify custom API URL
+API_URL=http://localhost:8080 ./test-integration.sh
+```
+
+The integration test verifies:
+- Health checks (liveness and readiness)
+- Cluster CRUD operations
+- Route CRUD operations
+- Proxy configuration hot reload
+- Data persistence
 
 ## Configuration
 
