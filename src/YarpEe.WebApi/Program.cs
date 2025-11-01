@@ -46,6 +46,17 @@ builder.Services.AddSingleton<Yarp.ReverseProxy.Configuration.IProxyConfigProvid
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<YarpEeDbContext>();
 
+// Add CORS for development
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 // Ensure database is created and migrated
@@ -70,6 +81,10 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure middleware
+app.UseCors();
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
+
 app.UseRouting();
 
 // Map endpoints
@@ -79,7 +94,10 @@ app.MapHostEndpoints();
 app.MapProxyEndpoints();
 app.MapHealthEndpoints();
 
-// Map YARP reverse proxy
+// Fallback to index.html for SPA routing
+app.MapFallbackToFile("index.html");
+
+// Map YARP reverse proxy last (it should be the fallback for unmatched routes)
 app.MapReverseProxy();
 
 app.Run();
